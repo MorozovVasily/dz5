@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+      <p>Top users and their post count:</p>
+      <ul>
+        {% for r in results %}
+        <p><a href="/user/{{r[0]}}"><b><u>{{r[0]}}</u> - {{r[1]}} <a href="/follow/{{r[2]}}"><u><b> - Follow!</b></u></a></b></a></p>
+        {% endfor %}
+      </ul>
+    </div>
+{% endblock %}

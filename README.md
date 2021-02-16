@@ -1,3 +1,8 @@
-# hse-cloud-2020-hw-5-storage
+## Как запускать локально
+```bash
+docker-compose build
+docker-compose up -d db
+docker-comopse up service
+```
 
-Simple instagram-like app, homework 5 in support of CS HSE Cloud Computing lectures course, 2021
+Открыть http://0.0.0.0:5000

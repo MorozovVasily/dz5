@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+      <h1><b>Feed:</b></h1>
+		{% for r in results %}
+						{{r}}
+			<p>
+			<h2> {{ r[0] }} posted on {{ r[1] }}: </h2>
+			<img src= 'static/img/{{ r[2] }}' >
+			<br>
+			<a href="/like/{{r[4]}}"><u><b>Like!</b></u></a>
+			Likes:
+			{% if r[3] is not none %}   
+			{% for l in r[3] %}
+				<a href="/user/{{l}}"><u><b>{{l}}</b></u></a>,
+			{% endfor %}
+			{% endif %}
+			</p>
+		{% endfor %}
+	  </p>
+    </div>
+{% endblock %}

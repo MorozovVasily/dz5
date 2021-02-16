@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=qp1337
+
+  service:
+    build:
+      dockerfile: Dockerfile
+      context: project
+    environment:
+      - FLASK_DEBUG=1
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
