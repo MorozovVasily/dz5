@@ -216,7 +216,7 @@ def uploader():
                     return "Invalid image", 400
             uploaded_file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-            rows = db.engine.execute("INSERT INTO Posts (user_id, urn) VALUES (1, '" + filename + "');")
+            rows = db.engine.execute("INSERT INTO Posts (user_id, urn) VALUES (" + str(current_user.id) + ", '" + filename + "');")
             return redirect(url_for('main.index'))
             '''return redirect(url_for('auth.user', username='Andrey'))'''
         except Exception as e:
