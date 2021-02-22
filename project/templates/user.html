@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
 	  <h1> <b>{{name}} page, subscribe if you like: </b> </h1>
-		<a href="/follow/{{r[5]}}"><u><b>Follow!</b></u></a>
+		<a href="/follow/{{results[0][5]}}"><u><b>Follow!</b></u></a>
 	  <h2> <b>{{name}} posts: </b></h2>
 		{% for r in results %}
 			<p>

@@ -97,7 +97,7 @@ def user(username):
         my_list = []
         for row in rows:
             my_list.append(row)
-        return render_template('user.html',  results=my_list)
+        return render_template('user.html',  results=my_list, name=username)
     except Exception as e:
         print(e)
         return redirect(url_for('main.index'))
