@@ -214,11 +214,11 @@ def uploader():
                 if file_ext not in UPLOAD_EXTENSIONS or \
                         validate_image(uploaded_file.stream) is None:
                     return "Invalid image", 400
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             uploaded_file.save(os.path.join(UPLOAD_FOLDER, filename))
 
             rows = db.engine.execute("INSERT INTO Posts (user_id, urn) VALUES (" + str(current_user.id) + ", '" + filename + "');")
             return redirect(url_for('main.index'))
-            '''return redirect(url_for('auth.user', username='Andrey'))'''
         except Exception as e:
             print(e)
             return redirect(url_for('main.index'))
