@@ -5,12 +5,23 @@ import os
 
 db = SQLAlchemy()
 
+os.system("""mkdir -p ~/.postgresql && \
+wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" -O ~/.postgresql/root.crt && \
+chmod 0600 ~/.postgresql/root.crt""")
+
 POSTGRES = {
-    'user': 'postgres',
-    'pw': 'qp1337',
-    'db': 'postgres',
-    'host': 'db',
-    'port': '5432',
+    # 'user': 'postgres',
+    # 'pw': 'qp1337',
+    # 'db': 'postgres',
+    # 'host': 'db',
+    # 'port': '5432',
+    # "host":"rc1a-wp8scjl0qkhavfgb.mdb.yandexcloud.net",
+    "host":"rc1a-d3gjsno8dqmeeafj.mdb.yandexcloud.net",
+    "port":"6432",
+    "db":"db1",
+    "user":"user1",
+    "pw":"password1",
+
 }
 
 def create_app():
@@ -22,7 +33,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 
     db.init_app(app)
-    
+
     with app.app_context():
         try:
             db.engine.execute("""
@@ -74,7 +85,7 @@ def create_app():
     # blueprint for non-auth parts of app
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
-    
+
     # blueprint for rest api
     from .rest import rest as rest_blueprint
     app.register_blueprint(rest_blueprint)

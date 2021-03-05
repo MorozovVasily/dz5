@@ -3,3 +3,4 @@ Flask_Login>=0.5.0
 Flask_SQLAlchemy>=2.4.4
 Werkzeug>=1.0.1
 Psycopg2-binary>=2.8.6
+boto3

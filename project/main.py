@@ -1,6 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 from . import db
+import boto3
+import base64
+
+session3 = boto3.session.Session()
+s3 = session3.client(
+    service_name='s3',
+    endpoint_url='https://storage.yandexcloud.net'
+)
 
 main = Blueprint('main', __name__)
 
@@ -12,9 +20,10 @@ def index():
 @login_required
 def profile():
     return render_template('profile.html', name=current_user.name)
-    
+
 @main.route('/trending')
 def trending():
+    print("trending AAA")
     try:
         rows = db.engine.execute("""
             SELECT name, date, urn, l.liked, l.like_count, ps.post_id
@@ -48,12 +57,16 @@ def trending():
         """)
         my_list = []
         for row in rows:
+            print(row[2])
+            row[2] = base64.b64encode(s3.get_object(Bucket='my-object-storage', Key=row[2])['Body'].read()).decode('utf-8')
             my_list.append(row)
+        print(len(my_list))
+        print(my_list)
         return render_template('trending.html',  results=my_list)
     except Exception as e:
         print(e)
         return redirect(url_for('main.index'))
-        
+
 @main.route('/users')
 def users():
     try:

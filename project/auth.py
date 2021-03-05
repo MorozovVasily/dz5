@@ -7,6 +7,15 @@ import os
 from os import makedirs
 from werkzeug.utils import secure_filename
 import imghdr
+import boto3
+import base64
+import sys
+
+session3 = boto3.session.Session()
+s3 = session3.client(
+    service_name='s3',
+    endpoint_url='https://storage.yandexcloud.net'
+)
 
 auth = Blueprint('auth', __name__)
 
@@ -56,7 +65,7 @@ def signup_post():
     db.session.commit()
 
     return redirect(url_for('auth.login'))
-    
+
 @auth.route('/user/<username>')
 @login_required
 def user(username):
@@ -115,7 +124,7 @@ def like(post_id):
     except Exception as e:
         print(e)
         return []
-        
+
 @auth.route('/follow/<following_id>', methods=['GET', 'POST'])
 @login_required
 def follow(following_id):
@@ -135,7 +144,7 @@ def follow(following_id):
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
-    
+
 @auth.route('/feed')
 @login_required
 def feed():
@@ -178,13 +187,22 @@ def feed():
         """, current_user.id)
         response = ''
         my_list = []
+        d = []
         for row in rows:
-            my_list.append(row)
-        return render_template('feed.html',  results=my_list)
+            # print(row[2], file=sys.stderr)
+            try:
+                dz = base64.b64encode(s3.get_object(Bucket='my-object-storage', Key=row[2])['Body'].read()).decode('utf-8')
+                # print(dz, file=sys.stderr)
+                d.append(dz)
+                # print()
+                my_list.append(row)
+            except Exception as e:
+                print(e, file=sys.stderr)
+        return render_template('feed.html',  results=my_list, data=d)
     except Exception as e:
-        print(e)
+        print(e, file=sys.stderr)
         return redirect(url_for('main.index'))
-    
+
 def validate_image(stream):
     header = stream.read(512)
     stream.seek(0)
@@ -192,12 +210,12 @@ def validate_image(stream):
     if not format:
         return None
     return '.' + format
-    
+
 @auth.route('/upload')
 @login_required
 def upload():
    return render_template('upload.html')
-	
+
 @auth.route('/uploader', methods = ['POST'])
 @login_required
 def uploader():
@@ -205,7 +223,7 @@ def uploader():
         UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.bmp']
         APP_ROOT = os.path.dirname(os.path.abspath(__file__))
         UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/img')
-    
+
         try:
             uploaded_file = request.files['file']
             filename = secure_filename(uploaded_file.filename)
@@ -215,6 +233,11 @@ def uploader():
                         validate_image(uploaded_file.stream) is None:
                     return "Invalid image", 400
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+            print("AAA OK")
+            s3.put_object(Bucket='my-object-storage', Key=filename, Body=uploaded_file.read())
+            print("AAA2 OK")
+
             uploaded_file.save(os.path.join(UPLOAD_FOLDER, filename))
 
             rows = db.engine.execute("INSERT INTO Posts (user_id, urn) VALUES (" + str(current_user.id) + ", '" + filename + "');")
@@ -222,5 +245,5 @@ def uploader():
         except Exception as e:
             print(e)
             return redirect(url_for('main.index'))
-        
+
     return redirect(url_for('main.index'))

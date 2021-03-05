@@ -66,7 +66,7 @@ def create_user():
     except Exception as e:
         print(e)
         return []
-        
+
 @rest.route('/api/new_post', methods=['POST'])
 def new_post():
     try:
@@ -81,7 +81,7 @@ def new_post():
     except Exception as e:
         print(e)
         return []
-        
+
 @rest.route('/api/like', methods=['POST'])
 def like():
     try:
@@ -95,7 +95,7 @@ def like():
     except Exception as e:
         print(e)
         return []
-        
+
 @rest.route('/api/follow', methods=['POST'])
 def follow():
     try:
@@ -125,7 +125,7 @@ def users():
         return resp
     except Exception as e:
         return []
-        
+
 @rest.route('/api/user/<username>', methods=['GET', 'POST'])
 def profile(username):
     try:
@@ -225,14 +225,14 @@ def validate_image(stream):
     if not format:
         return None
     return '.' + format
-	
+
 @rest.route('/api/uploader', methods = ['GET', 'POST'])
 def uploader():
     if request.method == 'POST':
         UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.bmp']
         APP_ROOT = os.path.dirname(os.path.abspath(__file__))
         UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/img')
-        
+
         uploaded_file = request.files['file']
         filename = secure_filename(uploaded_file.filename)
         if filename != '':

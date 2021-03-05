@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #comment next 2 lines after first launch:
-sudo apt-get update && sudo apt-get install -y python3-pip docker-ce
-sudo docker run --name docker-postgres --net=host -e POSTGRES_PASSWORD=qp1337 -d postgres
+sudo apt-get update && sudo apt-get install -y python3-pip #docker-ce
+#sudo docker run --name docker-postgres --net=host -e POSTGRES_PASSWORD=qp1337 -d postgres
 
 pip3 install -r project/requirements.txt
 
